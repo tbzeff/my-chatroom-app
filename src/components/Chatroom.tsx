@@ -6,6 +6,7 @@ const socket: Socket = io("http://localhost:3002");
 interface Message {
   id: string;
   text: string;
+  username: string;
 }
 
 export default function Chatroom() {
@@ -13,6 +14,20 @@ export default function Chatroom() {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const typingTimeout = useRef<number | null>(null);
+
+  const [username, setUsername] = useState(
+    localStorage.getItem("username") || ""
+  );
+
+  const [isUsernameSet, setIsUsernameSet] = useState(!!username);
+
+  const handleUsernameSubmit = () => {
+    if (username.trim()) {
+      localStorage.setItem("username", username);
+      setIsUsernameSet(true);
+    }
+  };
+
 
   useEffect(() => {
     socket.on("chat message", (msg: Message) => {
@@ -32,11 +47,12 @@ export default function Chatroom() {
   }, []);
 
   const sendMessage = () => {
-    if (input.trim() === "") return;
-    const newMessage = { id: crypto.randomUUID(), text: input };
+    if (input.trim() === "" || !username.trim()) return;
+    const newMessage = { id: crypto.randomUUID(), text: input, username };
     socket.emit("chat message", newMessage);
     setInput("");
   };
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -46,14 +62,36 @@ export default function Chatroom() {
   return (
     <div className="max-w-xl mx-auto mt-10 p-4 bg-gray-900 text-white rounded-xl shadow-lg">
       <h1 className="text-xl font-bold mb-4">Chatroom</h1>
+
+      {!isUsernameSet ? (
+        <div className="mb-4">
+          <input
+            className="px-3 py-2 mr-2 rounded bg-gray-800 border border-gray-700"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Choose a username..."
+          />
+          <button
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white"
+            onClick={handleUsernameSubmit}
+          >
+            Enter Chat
+          </button>
+        </div>
+      ) : (
+        <div className="text-sm mb-2 text-gray-400">Logged in as: <span className="font-semibold">{username}</span></div>
+      )}
+
       <div className="h-64 overflow-y-auto border border-gray-700 p-2 mb-4 rounded">
         {messages.map((msg) => (
           <div key={msg.id} className="mb-1">
-            {msg.text}
+            <span className="font-semibold text-green-400">{msg.username}:</span> {msg.text}
           </div>
         ))}
+
         {typing && <div className="italic text-sm text-gray-400">Someone is typing...</div>}
       </div>
+
       <div className="flex gap-2">
         <input
           className="flex-grow px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none"
