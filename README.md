@@ -118,7 +118,7 @@ node server.js
 ## 👤 Author
 
 Taylor Bleizeffer
-https://www.taylorbleizeffer.com
-https://github.com/tbzeff
+- **https://www.taylorbleizeffer.com**
+- **https://github.com/tbzeff**
 
 
