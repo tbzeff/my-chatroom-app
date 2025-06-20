@@ -1,54 +1,124 @@
-# React + TypeScript + Vite
+# Chatroom App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple, real-time chatroom web application built with **React**, **TypeScript**, **Socket.IO**, and **Tailwind CSS**, designed for extensibility and showcasing modern frontend development practices.
 
-Currently, two official plugins are available:
+## 🌐 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Real-time messaging via WebSockets
+- Persistent username using `localStorage`
+- Typing indicators
+- Responsive and styled with Tailwind CSS
+- Built with performance and modularity in mind
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend Framework:** React 19
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS 4
+- **Build Tool:** Vite
+- **WebSocket:** socket.io-client
+- **Linting:** ESLint with `typescript-eslint` and `react-hooks`
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 📁 Project Structure
+
+```
+my-chatroom-app/
+├── public/
+├── src/
+│   ├── components/
+│   │   └── Chatroom.tsx
+│   ├── App.tsx
+│   ├── main.tsx
+│   ├── index.css
+├── index.html
+├── package.json
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
+├── vite.config.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Getting Started
+
+These instructions will get the development environment running locally.
+
+### Prerequisites
+
+- **Node.js** (v18 or higher recommended)
+- **npm** (v9+)
+
+### Installation
+
+1. **Clone the repository** (or place this README in your working directory):
+
+   ```bash
+   git clone https://github.com/your-username/my-chatroom-app.git
+   cd my-chatroom-app
+   ```
+
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and go to `http://localhost:5173`
+
+### Optional: Lint the code
+
+```bash
+npm run lint
+```
+
+## 🧪 Backend Setup (for testing)
+
+Ensure you have a basic Socket.IO server running on port **3002**, as the client is configured to connect to `http://localhost:3002`. Here is a minimal example of a `server.js`:
 
 ```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+// server.js
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
+const httpServer = createServer();
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
   },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+});
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('chat message', (msg) => {
+    socket.broadcast.emit('chat message', msg);
+  });
+
+  socket.on('typing', () => {
+    socket.broadcast.emit('typing');
+  });
+});
+
+httpServer.listen(3002, () => {
+  console.log('Socket.IO server running on http://localhost:3002');
+});
 ```
+
+Run it with:
+
+```bash
+node server.js
+```
+
+## 👤 Author
+
+Taylor Bleizeffer
+https://www.taylorbleizeffer.com
+https://github.com/tbzeff
+
+

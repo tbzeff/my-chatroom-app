@@ -15,6 +15,10 @@ export default function Chatroom() {
   const [typing, setTyping] = useState(false);
   const typingTimeout = useRef<number | null>(null);
 
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const chatBoxRef = useRef<HTMLDivElement | null>(null);
+
+
   const [username, setUsername] = useState(
     localStorage.getItem("username") || ""
   );
@@ -28,10 +32,29 @@ export default function Chatroom() {
     }
   };
 
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
 
   useEffect(() => {
     socket.on("chat message", (msg: Message) => {
-      setMessages((prev) => [...prev, msg]);
+      setMessages((prev) => {
+        const isNearBottom =
+          chatBoxRef.current &&
+          chatBoxRef.current.scrollHeight - chatBoxRef.current.scrollTop <=
+            chatBoxRef.current.clientHeight + 100;
+
+        // Set messages first
+        const updated = [...prev, msg];
+
+        // Then scroll conditionally
+        setTimeout(() => {
+          if (isNearBottom) scrollToBottom();
+        }, 50);
+
+        return updated;
+      });
     });
 
     socket.on("typing", () => {
@@ -51,8 +74,10 @@ export default function Chatroom() {
     const newMessage = { id: crypto.randomUUID(), text: input, username };
     socket.emit("chat message", newMessage);
     setInput("");
-  };
 
+    // Force scroll to bottom when user sends message
+    scrollToBottom();
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -60,9 +85,12 @@ export default function Chatroom() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-4 bg-gray-900 text-white rounded-xl shadow-lg">
+    <div className="w-full max-w-xl mx-auto p-4 bg-gray-900 text-white rounded-xl shadow-lg flex flex-col h-[24rem]">
+
+      {/* Header */}
       <h1 className="text-xl font-bold mb-4">Chatroom</h1>
 
+      {/*Username handling*/}
       {!isUsernameSet ? (
         <div className="mb-4">
           <input
@@ -82,30 +110,38 @@ export default function Chatroom() {
         <div className="text-sm mb-2 text-gray-400">Logged in as: <span className="font-semibold">{username}</span></div>
       )}
 
-      <div className="h-64 overflow-y-auto border border-gray-700 p-2 mb-4 rounded">
-        {messages.map((msg) => (
-          <div key={msg.id} className="mb-1">
-            <span className="font-semibold text-green-400">{msg.username}:</span> {msg.text}
-          </div>
-        ))}
+     {/*Chatbox & Input*/}
+      <div className="flex flex-col h-full">
+        {/*Chatbox*/}
+        
+        <div
+        ref={chatBoxRef}
+         className="flex-1 overflow-y-auto border border-gray-700 p-2 mb-4 rounded">
+          {messages.map((msg) => (
+            <div key={msg.id} className="mb-1">
+              <span className="font-semibold text-green-400">{msg.username}:</span> {msg.text}
+            </div>
+          ))}
 
-        {typing && <div className="italic text-sm text-gray-400">Someone is typing...</div>}
-      </div>
-
-      <div className="flex gap-2">
-        <input
-          className="flex-grow px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none"
-          value={input}
-          onChange={handleInputChange}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          placeholder="Type a message..."
-        />
-        <button
-          onClick={sendMessage}
-          className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
-        >
-          Send
-        </button>
+          {typing && <div className="italic text-sm text-gray-400">Someone is typing...</div>}
+        <div ref={chatEndRef} />
+        </div>
+        {/*Input*/}
+        <div className="flex gap-2">
+          <input
+            className="flex-grow px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none"
+            value={input}
+            onChange={handleInputChange}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            placeholder="Type a message..."
+          />
+          <button
+            onClick={sendMessage}
+            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
+          >
+            Send
+          </button>
+        </div>
       </div>
     </div>
   );
