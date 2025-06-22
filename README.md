@@ -17,13 +17,14 @@ A simple, real-time chatroom web application built with **React**, **TypeScript*
 - **Styling:** Tailwind CSS 4
 - **Build Tool:** Vite
 - **WebSocket:** socket.io-client
-- **Linting:** ESLint with `typescript-eslint` and `react-hooks`
 
 ## 📁 Project Structure
 
 ```
 my-chatroom-app/
 ├── public/
+├── server/
+│   ├── server.js
 ├── src/
 │   ├── components/
 │   │   └── Chatroom.tsx
@@ -52,7 +53,7 @@ These instructions will get the development environment running locally.
 1. **Clone the repository** (or place this README in your working directory):
 
    ```bash
-   git clone https://github.com/your-username/my-chatroom-app.git
+   git clone https://github.com/tbzeff/my-chatroom-app.git
    cd my-chatroom-app
    ```
 
@@ -78,7 +79,7 @@ npm run lint
 
 ## 🧪 Backend Setup (for testing)
 
-Ensure you have a basic Socket.IO server running on port **3002**, as the client is configured to connect to `http://localhost:3002`. Here is a minimal example of a `server.js`:
+Ensure you have a basic Socket.IO server running on port **3002**, as the client is configured to connect to `http://localhost:3002`. Here is a minimal example of a `server.js` (although there is a 'server.js' included in the repository):
 
 ```js
 // server.js
