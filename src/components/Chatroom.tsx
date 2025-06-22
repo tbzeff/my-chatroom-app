@@ -18,6 +18,8 @@ export default function Chatroom() {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const chatBoxRef = useRef<HTMLDivElement | null>(null);
 
+  const [isUserNearBottom, setIsUserNearBottom] = useState(true);
+
 
   const [username, setUsername] = useState(
     localStorage.getItem("username") || ""
@@ -36,7 +38,19 @@ export default function Chatroom() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!chatBoxRef.current) return;
+      const { scrollHeight, scrollTop, clientHeight } = chatBoxRef.current;
+      const nearBottom = scrollHeight - scrollTop <= clientHeight + 100;
+      setIsUserNearBottom(nearBottom);
+    };
+
+    const chatBox = chatBoxRef.current;
+    chatBox?.addEventListener("scroll", handleScroll);
+
+    return () => chatBox?.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
 
@@ -137,9 +151,14 @@ export default function Chatroom() {
             </div>
           ))}
 
-          {typing && <div className="italic text-sm text-gray-400">Someone is typing...</div>}
+          {typing && isUserNearBottom && <div className="italic text-sm text-gray-400">Someone is typing...</div>}
         <div ref={chatEndRef} />
         </div>
+        {typing && !isUserNearBottom && (
+          <div className="text-sm italic text-gray-400 mb-1 text-right">
+            Someone is typing...
+          </div>
+        )}
         {/*Input*/}
         <div className="flex gap-2">
           <input
