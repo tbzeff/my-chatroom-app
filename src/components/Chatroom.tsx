@@ -36,17 +36,20 @@ export default function Chatroom() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const scrollIfNearBottom = () => {
-    if (chatBoxRef.current) {
-      const { scrollHeight, scrollTop, clientHeight } = chatBoxRef.current;
-      const isNearBottom = scrollHeight - scrollTop <= clientHeight + 100;
-      if (isNearBottom) {
-        setTimeout(scrollToBottom, 50);
-      }
-    }
-  };
+  
 
   useEffect(() => {
+
+    const scrollIfNearBottom = () => {
+      if (chatBoxRef.current) {
+        const { scrollHeight, scrollTop, clientHeight } = chatBoxRef.current;
+        const isNearBottom = scrollHeight - scrollTop <= clientHeight + 100;
+        if (isNearBottom) {
+          setTimeout(scrollToBottom, 50);
+        }
+      }
+    };
+
     socket.on("chat message", (msg: Message) => {
       setMessages((prev) => {
         const updated = [...prev, msg];
@@ -78,7 +81,7 @@ export default function Chatroom() {
       socket.off("chat history");
       socket.off("typing");
     };
-  }, [scrollIfNearBottom]);
+  }, []);
 
   const sendMessage = () => {
     if (input.trim() === "" || !username.trim()) return;
