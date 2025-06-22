@@ -36,25 +36,30 @@ export default function Chatroom() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const scrollIfNearBottom = () => {
+    if (chatBoxRef.current) {
+      const { scrollHeight, scrollTop, clientHeight } = chatBoxRef.current;
+      const isNearBottom = scrollHeight - scrollTop <= clientHeight + 100;
+      if (isNearBottom) {
+        setTimeout(scrollToBottom, 50);
+      }
+    }
+  };
 
   useEffect(() => {
     socket.on("chat message", (msg: Message) => {
       setMessages((prev) => {
-        const isNearBottom =
-          chatBoxRef.current &&
-          chatBoxRef.current.scrollHeight - chatBoxRef.current.scrollTop <=
-            chatBoxRef.current.clientHeight + 100;
-
-        // Set messages first
         const updated = [...prev, msg];
-
-        // Then scroll conditionally
-        setTimeout(() => {
-          if (isNearBottom) scrollToBottom();
-        }, 50);
-
+        scrollIfNearBottom();
         return updated;
       });
+    });
+
+    socket.on("typing", () => {
+      setTyping(true);
+      if (typingTimeout.current) clearTimeout(typingTimeout.current);
+      typingTimeout.current = setTimeout(() => setTyping(false), 1000);
+      scrollIfNearBottom();
     });
 
     socket.on("chat history", (history: Message[]) => {
@@ -73,7 +78,7 @@ export default function Chatroom() {
       socket.off("chat history");
       socket.off("typing");
     };
-  }, []);
+  }, [scrollIfNearBottom]);
 
   const sendMessage = () => {
     if (input.trim() === "" || !username.trim()) return;
@@ -122,7 +127,7 @@ export default function Chatroom() {
         
         <div
         ref={chatBoxRef}
-         className="flex-1 overflow-y-auto border border-gray-700 p-2 mb-4 rounded">
+         className="flex-1 overflow-y-auto border border-gray-700 p-2 mb-4 rounded scroll-smooth">
           {messages.map((msg) => (
             <div key={msg.id} className="mb-1">
               <span className="font-semibold text-green-400">{msg.username}:</span> {msg.text}
