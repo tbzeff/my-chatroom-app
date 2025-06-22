@@ -57,6 +57,11 @@ export default function Chatroom() {
       });
     });
 
+    socket.on("chat history", (history: Message[]) => {
+      setMessages(history);
+      setTimeout(scrollToBottom, 50); // Scroll after loading history
+    });
+
     socket.on("typing", () => {
       setTyping(true);
       if (typingTimeout.current) clearTimeout(typingTimeout.current);
@@ -65,6 +70,7 @@ export default function Chatroom() {
 
     return () => {
       socket.off("chat message");
+      socket.off("chat history");
       socket.off("typing");
     };
   }, []);
