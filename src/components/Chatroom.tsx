@@ -126,64 +126,112 @@ export default function Chatroom() {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4 bg-gray-900 text-white rounded-xl shadow-lg flex h-[24rem]">
+    <div
+      className="w-full max-w-3xl mx-auto p-4 rounded-xl shadow-lg flex h-[24rem]"
+      style={{
+        backgroundColor: "var(--color-primary)",
+        color: "var(--color-neutral)",
+      }}
+    >
       <div className="flex flex-col flex-1 h-full w-full">
         {/* Header */}
-        <h1 className="text-xl font-bold mb-4">Chatroom</h1>
+        <h1
+          className="text-xl font-bold mb-4 text-center"
+          style={{ color: "var(--color-accent)" }}
+        >
+          Chatroom
+        </h1>
         {/*Username handling*/}
         {!isUsernameSet ? (
           <div className="mb-4">
             <input
-              className="px-3 py-2 mr-2 rounded bg-gray-800 border border-gray-700"
+              className="px-3 py-2 mr-2 rounded border"
+              style={{
+                backgroundColor: "var(--color-neutral)",
+                color: "var(--color-primary)",
+                borderColor: "var(--color-secondary)",
+              }}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Choose a username..."
             />
             <button
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white"
+              style={{
+                backgroundColor: "var(--color-accent)",
+                color: "var(--color-neutral)",
+                borderColor: "var(--color-secondary)",
+              }}
+              className="hover:brightness-110 px-4 py-2 rounded"
               onClick={handleUsernameSubmit}
             >
               Enter Chat
             </button>
           </div>
         ) : (
-          <div className="text-sm mb-2 text-gray-400">
+          <div
+            className="text-sm mb-2"
+            style={{ color: "var(--color-secondary)" }}
+          >
             Logged in as:{" "}
-            <span className="font-semibold">{username}</span>
+            <span
+              className="font-semibold"
+              style={{ color: "var(--color-accent)" }}
+            >
+              {username}
+            </span>
           </div>
         )}
         {/* Chatbox & Sidebar Row */}
         <div className="flex flex-1 h-full">
-          {/*Chatbox - set max-w-md and flex-shrink*/}
+          {/*Chatbox*/}
           <div className="flex flex-col flex-shrink w-4/5 max-w-md h-full">
             <div
               ref={chatBoxRef}
-              className="flex-1 overflow-y-auto border border-gray-700 p-2 mb-4 rounded scroll-smooth"
+              className="flex-1 overflow-y-auto border p-2 mb-4 rounded scroll-smooth"
+              style={{
+                borderColor: "var(--color-secondary)",
+                backgroundColor: "var(--color-neutral)",
+                color: "var(--color-primary)",
+              }}
             >
               {messages.map((msg) => (
                 <div key={msg.id} className="mb-1">
-                  <span className="font-semibold text-green-400">
+                  <span
+                    className="font-semibold"
+                    style={{ color: "var(--color-accent)" }}
+                  >
                     {msg.username}:
                   </span>{" "}
                   {msg.text}
                 </div>
               ))}
               {typing && isUserNearBottom && (
-                <div className="italic text-sm text-gray-400">
+                <div
+                  className="italic text-sm"
+                  style={{ color: "var(--color-secondary)" }}
+                >
                   Someone is typing...
                 </div>
               )}
               <div ref={chatEndRef} />
             </div>
             {typing && !isUserNearBottom && (
-              <div className="text-sm italic text-gray-400 mb-1 text-right">
+              <div
+                className="text-sm italic mb-1 text-right"
+                style={{ color: "var(--color-secondary)" }}
+              >
                 Someone is typing...
               </div>
             )}
             {/*Input*/}
             <div className="flex gap-2">
               <input
-                className="flex-grow px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none"
+                className="flex-grow px-3 py-2 rounded border focus:outline-none"
+                style={{
+                  backgroundColor: "var(--color-neutral)",
+                  color: "var(--color-primary)",
+                  borderColor: "var(--color-secondary)",
+                }}
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
@@ -191,24 +239,47 @@ export default function Chatroom() {
               />
               <button
                 onClick={sendMessage}
-                className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
+                className="px-4 py-2 rounded"
+                style={{
+                  backgroundColor: "var(--color-accent)",
+                  color: "var(--color-neutral)",
+                  borderColor: "var(--color-secondary)",
+                }}
               >
                 Send
               </button>
             </div>
           </div>
           {/* Sidebar - wider */}
-          <aside className="w-[12rem] bg-gray-800 rounded border border-gray-700 px-4 flex flex-col ml-4 h-full self-start">
-            <h2 className="text-lg font-semibold mb-2 text-center">Users</h2>
+          <aside
+            className="w-[12rem] rounded border px-4 flex flex-col ml-4 h-full self-start"
+            style={{
+              backgroundColor: "var(--color-secondary)",
+              borderColor: "var(--color-accent)",
+              color: "var(--color-neutral)",
+            }}
+          >
+            <h2
+              className="text-lg font-semibold mb-2 text-center"
+              style={{ color: "var(--color-accent)" }}
+            >
+              Users
+            </h2>
             <ul className="flex-1 overflow-y-auto text-sm">
               {users.length === 0 && (
-                <li className="text-gray-500 italic">No users</li>
+                <li
+                  className="italic"
+                  style={{ color: "var(--color-neutral)" }}
+                >
+                  No users
+                </li>
               )}
               {users.map((user) => (
                 <li
                   key={user}
-                  className={
-                    user === username ? "font-bold text-green-400" : ""
+                  className={user === username ? "font-bold" : ""}
+                  style={
+                    user === username ? { color: "var(--color-accent)" } : {}
                   }
                 >
                   {user === username ? "You" : user}
