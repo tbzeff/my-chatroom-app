@@ -9,12 +9,23 @@ const io = new Server(httpServer, {
 });
 
 let chatHistory = []; // <-- In-memory store
+const users = {}; // Map socket.id -> username
+
+function broadcastUserList() {
+  io.emit('user list', Object.values(users));
+}
 
 io.on('connection', socket => {
   console.log('a user connected');
 
   // Send history to new user
   socket.emit('chat history', chatHistory)
+
+  // Handle username set
+  socket.on('set username', username => {
+    users[socket.id] = username;
+    broadcastUserList();
+  });
 
   socket.on('chat message', msg => {
     chatHistory.push(msg); // Store message
@@ -24,6 +35,11 @@ io.on('connection', socket => {
 
   socket.on('typing', () => {
     socket.broadcast.emit('typing');
+  });
+
+  socket.on('disconnect', () => {
+    delete users[socket.id];
+    broadcastUserList();
   });
 });
 
