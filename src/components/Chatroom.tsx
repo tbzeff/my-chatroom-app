@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
+import EmojiPicker from "emoji-picker-react";
+import type { EmojiClickData } from "emoji-picker-react";
 
 const socket: Socket = io("http://localhost:3002");
 
 interface Message {
   id: string;
   text: string;
+  gifUrl?: string;
   username: string;
 }
 
@@ -27,6 +30,7 @@ export default function Chatroom() {
 
   // New: Track users in sidebar
   const [users, setUsers] = useState<string[]>([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleUsernameSubmit = () => {
     if (username.trim()) {
@@ -123,6 +127,11 @@ export default function Chatroom() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
     socket.emit("typing");
+  };
+
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setInput((prev) => prev + emojiData.emoji);
+    setShowEmojiPicker(false);
   };
 
   return (
@@ -224,7 +233,28 @@ export default function Chatroom() {
               </div>
             )}
             {/*Input*/}
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center relative">
+              <button
+                type="button"
+                className="px-2 py-2 rounded border"
+                style={{
+                  backgroundColor: "var(--color-neutral)",
+                  color: "var(--color-primary)",
+                  borderColor: "var(--color-secondary)",
+                }}
+                onClick={() => setShowEmojiPicker((v) => !v)}
+                aria-label="Add emoji"
+              >
+                <span role="img" aria-label="emoji">
+                  😊
+                </span>
+              </button>
+              {showEmojiPicker && (
+                <div className="absolute bottom-12 left-0 z-10">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  <EmojiPicker onEmojiClick={handleEmojiClick} theme={"dark" as any} />
+                </div>
+              )}
               <input
                 className="flex-grow px-3 py-2 rounded border focus:outline-none"
                 style={{
