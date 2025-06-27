@@ -1,11 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
-import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
+import { ChatHeader } from "./ChatHeader";
+import { UsernameForm } from "./UsernameForm";
+import { UserInfo } from "./UserInfo";
+import { ChatBox } from "./ChatBox";
+import { ChatInput } from "./ChatInput";
+import { UserSidebar } from "./UserSidebar";
 
 const socket: Socket = io("http://localhost:3002");
 
-interface Message {
+export interface Message {
   id: string;
   text: string;
   gifUrl?: string;
@@ -144,86 +149,28 @@ export default function Chatroom() {
     >
       <div className="flex flex-col flex-1 h-full w-full">
         {/* Header */}
-        <h1
-          className="text-xl font-bold mb-4 text-center"
-          style={{ color: "var(--color-accent)" }}
-        >
-          Chatroom
-        </h1>
+        <ChatHeader />
         {/*Username handling*/}
         {!isUsernameSet ? (
-          <div className="mb-4">
-            <input
-              className="px-3 py-2 mr-2 rounded border"
-              style={{
-                backgroundColor: "var(--color-neutral)",
-                color: "var(--color-primary)",
-                borderColor: "var(--color-secondary)",
-              }}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Choose a username..."
-            />
-            <button
-              style={{
-                backgroundColor: "var(--color-accent)",
-                color: "var(--color-neutral)",
-                borderColor: "var(--color-secondary)",
-              }}
-              className="hover:brightness-110 px-4 py-2 rounded"
-              onClick={handleUsernameSubmit}
-            >
-              Enter Chat
-            </button>
-          </div>
+          <UsernameForm
+            username={username}
+            setUsername={setUsername}
+            handleUsernameSubmit={handleUsernameSubmit}
+          />
         ) : (
-          <div
-            className="text-sm mb-2"
-            style={{ color: "var(--color-secondary)" }}
-          >
-            Logged in as:{" "}
-            <span
-              className="font-semibold"
-              style={{ color: "var(--color-accent)" }}
-            >
-              {username}
-            </span>
-          </div>
+          <UserInfo username={username} />
         )}
         {/* Chatbox & Sidebar Row */}
         <div className="flex flex-1 h-full">
           {/*Chatbox*/}
           <div className="flex flex-col flex-shrink w-4/5 max-w-md h-full">
-            <div
-              ref={chatBoxRef}
-              className="flex-1 overflow-y-auto border p-2 mb-4 rounded scroll-smooth"
-              style={{
-                borderColor: "var(--color-secondary)",
-                backgroundColor: "var(--color-neutral)",
-                color: "var(--color-primary)",
-              }}
-            >
-              {messages.map((msg) => (
-                <div key={msg.id} className="mb-1">
-                  <span
-                    className="font-semibold"
-                    style={{ color: "var(--color-accent)" }}
-                  >
-                    {msg.username}:
-                  </span>{" "}
-                  {msg.text}
-                </div>
-              ))}
-              {typing && isUserNearBottom && (
-                <div
-                  className="italic text-sm"
-                  style={{ color: "var(--color-secondary)" }}
-                >
-                  Someone is typing...
-                </div>
-              )}
-              <div ref={chatEndRef} />
-            </div>
+            <ChatBox
+              messages={messages}
+              typing={typing}
+              isUserNearBottom={isUserNearBottom}
+              chatEndRef={chatEndRef as React.RefObject<HTMLDivElement>}
+              chatBoxRef={chatBoxRef as React.RefObject<HTMLDivElement>}
+            />
             {typing && !isUserNearBottom && (
               <div
                 className="text-sm italic mb-1 text-right"
@@ -232,91 +179,18 @@ export default function Chatroom() {
                 Someone is typing...
               </div>
             )}
-            {/*Input*/}
-            <div className="flex gap-2 items-center relative">
-              <button
-                type="button"
-                className="px-2 py-2 rounded border"
-                style={{
-                  backgroundColor: "var(--color-neutral)",
-                  color: "var(--color-primary)",
-                  borderColor: "var(--color-secondary)",
-                }}
-                onClick={() => setShowEmojiPicker((v) => !v)}
-                aria-label="Add emoji"
-              >
-                <span role="img" aria-label="emoji">
-                  😊
-                </span>
-              </button>
-              {showEmojiPicker && (
-                <div className="absolute bottom-12 left-0 z-10">
-                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <EmojiPicker onEmojiClick={handleEmojiClick} theme={"dark" as any} />
-                </div>
-              )}
-              <input
-                className="flex-grow px-3 py-2 rounded border focus:outline-none"
-                style={{
-                  backgroundColor: "var(--color-neutral)",
-                  color: "var(--color-primary)",
-                  borderColor: "var(--color-secondary)",
-                }}
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                placeholder="Type a message..."
-              />
-              <button
-                onClick={sendMessage}
-                className="px-4 py-2 rounded"
-                style={{
-                  backgroundColor: "var(--color-accent)",
-                  color: "var(--color-neutral)",
-                  borderColor: "var(--color-secondary)",
-                }}
-              >
-                Send
-              </button>
-            </div>
+            <ChatInput
+              input={input}
+              setInput={setInput}
+              sendMessage={sendMessage}
+              showEmojiPicker={showEmojiPicker}
+              setShowEmojiPicker={setShowEmojiPicker}
+              handleEmojiClick={handleEmojiClick}
+              handleInputChange={handleInputChange}
+            />
           </div>
           {/* Sidebar - wider */}
-          <aside
-            className="w-[12rem] rounded border px-4 flex flex-col ml-4 h-full self-start"
-            style={{
-              backgroundColor: "var(--color-secondary)",
-              borderColor: "var(--color-accent)",
-              color: "var(--color-neutral)",
-            }}
-          >
-            <h2
-              className="text-lg font-semibold mb-2 text-center"
-              style={{ color: "var(--color-accent)" }}
-            >
-              Users
-            </h2>
-            <ul className="flex-1 overflow-y-auto text-sm">
-              {users.length === 0 && (
-                <li
-                  className="italic"
-                  style={{ color: "var(--color-neutral)" }}
-                >
-                  No users
-                </li>
-              )}
-              {users.map((user) => (
-                <li
-                  key={user}
-                  className={user === username ? "font-bold" : ""}
-                  style={
-                    user === username ? { color: "var(--color-accent)" } : {}
-                  }
-                >
-                  {user === username ? "You" : user}
-                </li>
-              ))}
-            </ul>
-          </aside>
+          <UserSidebar users={users} username={username} />
         </div>
       </div>
     </div>
