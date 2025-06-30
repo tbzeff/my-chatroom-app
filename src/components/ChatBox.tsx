@@ -29,6 +29,16 @@ export function ChatBox({ messages, typing, isUserNearBottom, chatEndRef, chatBo
             {msg.username}:
           </span>{" "}
           {msg.text}
+          {msg.gifUrl && (
+            <div className="mt-1">
+              <img
+                src={msg.gifUrl}
+                alt="GIF"
+                className="rounded max-w-xs max-h-40 border border-gray-300"
+                style={{ display: "inline-block", verticalAlign: "middle" }}
+              />
+            </div>
+          )}
         </div>
       ))}
       {typing && isUserNearBottom && (

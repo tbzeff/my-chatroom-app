@@ -1,6 +1,7 @@
 import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
 import React from "react";
+import { GifPicker } from "./GifPicker";
 
 interface ChatInputProps {
   input: string;
@@ -10,6 +11,9 @@ interface ChatInputProps {
   setShowEmojiPicker: (val: boolean) => void;
   handleEmojiClick: (emojiData: EmojiClickData) => void;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  showGifPicker: boolean;
+  setShowGifPicker: (val: boolean) => void;
+  handleGifSelect: (gifUrl: string) => void;
 }
 
 export function ChatInput({
@@ -19,6 +23,9 @@ export function ChatInput({
     setShowEmojiPicker,
     handleEmojiClick,
     handleInputChange,
+    showGifPicker,
+    setShowGifPicker,
+    handleGifSelect,
 }: ChatInputProps) {
     return (
         <div className="flex gap-2 items-center relative">
@@ -49,11 +56,29 @@ export function ChatInput({
                     😊
                 </span>
             </button>
+            <button
+                type="button"
+                className="px-2 py-2 rounded border"
+                style={{
+                    backgroundColor: "var(--color-neutral)",
+                    color: "var(--color-primary)",
+                    borderColor: "var(--color-secondary)",
+                }}
+                onClick={() => setShowGifPicker(!showGifPicker)}
+                aria-label="Add GIF"
+            >
+                <span role="img" aria-label="gif">
+                    🖼️
+                </span>
+            </button>
             {showEmojiPicker && (
                 <div className="absolute bottom-12 right-16 z-10">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     <EmojiPicker onEmojiClick={handleEmojiClick} theme={"dark" as any} />
                 </div>
+            )}
+            {showGifPicker && (
+                <GifPicker onGifSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
             )}
             <button
                 onClick={sendMessage}

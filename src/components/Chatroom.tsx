@@ -36,6 +36,7 @@ export default function Chatroom() {
   // New: Track users in sidebar
   const [users, setUsers] = useState<string[]>([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
 
   const handleUsernameSubmit = () => {
     if (username.trim()) {
@@ -121,11 +122,12 @@ export default function Chatroom() {
     };
   }, []);
 
-  const sendMessage = () => {
-    if (input.trim() === "" || !username.trim()) return;
-    const newMessage = { id: crypto.randomUUID(), text: input, username };
+  const sendMessage = (gifUrl?: string) => {
+    if ((input.trim() === "" && !gifUrl) || !username.trim()) return;
+    const newMessage = { id: crypto.randomUUID(), text: input, username, gifUrl };
     socket.emit("chat message", newMessage);
     setInput("");
+    setShowGifPicker(false);
     scrollToBottom();
   };
 
@@ -137,6 +139,10 @@ export default function Chatroom() {
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     setInput((prev) => prev + emojiData.emoji);
     setShowEmojiPicker(false);
+  };
+
+  const handleGifSelect = (gifUrl: string) => {
+    sendMessage(gifUrl);
   };
 
   return (
@@ -182,11 +188,14 @@ export default function Chatroom() {
             <ChatInput
               input={input}
               setInput={setInput}
-              sendMessage={sendMessage}
+              sendMessage={() => sendMessage()}
               showEmojiPicker={showEmojiPicker}
               setShowEmojiPicker={setShowEmojiPicker}
               handleEmojiClick={handleEmojiClick}
               handleInputChange={handleInputChange}
+              showGifPicker={showGifPicker}
+              setShowGifPicker={setShowGifPicker}
+              handleGifSelect={handleGifSelect}
             />
           </div>
           {/* Sidebar - wider */}
