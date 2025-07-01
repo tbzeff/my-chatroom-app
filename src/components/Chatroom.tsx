@@ -147,13 +147,13 @@ export default function Chatroom() {
 
   return (
     <div
-      className="w-full max-w-3xl mx-auto p-4 rounded-xl shadow-lg flex h-[24rem]"
+      className="w-full max-w-3xl mx-auto p-4 rounded-xl shadow-lg flex h-[24rem] relative"
       style={{
         backgroundColor: "var(--color-primary)",
         color: "var(--color-neutral)",
       }}
     >
-      <div className="flex flex-col flex-1 h-full w-full">
+      <div className="flex flex-col flex-1 h-full w-full relative">
         {/* Header */}
         <ChatHeader />
         {/*Username handling*/}
@@ -167,9 +167,9 @@ export default function Chatroom() {
           <UserInfo username={username} />
         )}
         {/* Chatbox & Sidebar Row */}
-        <div className="flex flex-1 h-full">
+        <div className="flex flex-1 h-full relative">
           {/*Chatbox*/}
-          <div className="flex flex-col flex-shrink w-4/5 max-w-md h-full">
+          <div className="flex flex-col flex-shrink w-4/5 max-w-md h-full relative">
             <ChatBox
               messages={messages}
               typing={typing}

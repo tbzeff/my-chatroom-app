@@ -1,6 +1,7 @@
 import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
 import React from "react";
+import { createPortal } from "react-dom";
 import { GifPicker } from "./GifPicker";
 
 interface ChatInputProps {
@@ -27,8 +28,34 @@ export function ChatInput({
     setShowGifPicker,
     handleGifSelect,
 }: ChatInputProps) {
+    // Get the portal root (create if not present)
+    const portalRoot = React.useMemo(() => {
+        let el = document.getElementById("portal-root");
+        if (!el) {
+            el = document.createElement("div");
+            el.id = "portal-root";
+            document.body.appendChild(el);
+        }
+        return el;
+    }, []);
+
+    // Get the button ref for positioning
+    const inputRef = React.useRef<HTMLDivElement>(null);
+    const [pickerPos, setPickerPos] = React.useState<{ top: number; left: number } | null>(null);
+
+    // Calculate position for the pickers (right aligned above ChatInput)
+    React.useEffect(() => {
+        if ((showEmojiPicker || showGifPicker) && inputRef.current) {
+            const rect = inputRef.current.getBoundingClientRect();
+            setPickerPos({
+                top: rect.top - 320, // adjust as needed for picker height
+                left: rect.right - 350, // adjust as needed for picker width
+            });
+        }
+    }, [showEmojiPicker, showGifPicker]);
+
     return (
-        <div className="flex gap-2 items-center relative">
+        <div ref={inputRef} className="flex gap-2 items-center relative border-4 border-red-500">
             <input
                 className="flex-grow px-3 py-2 rounded border focus:outline-none"
                 style={{
@@ -71,17 +98,37 @@ export function ChatInput({
                     🖼️
                 </span>
             </button>
-            {showEmojiPicker && (
-                <div className="absolute right-0 bottom-14 z-10 mb-2">
-                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                    <EmojiPicker onEmojiClick={handleEmojiClick} theme={"dark" as any} />
-                </div>
-            )}
-            {showGifPicker && (
-                <div className="absolute right-0 bottom-14 z-10 mb-2">
-                    <GifPicker onGifSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
-                </div>
-            )}
+            {showEmojiPicker && pickerPos &&
+                createPortal(
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: pickerPos.top,
+                            left: pickerPos.left,
+                            zIndex: 1000,
+                        }}
+                    >
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        <EmojiPicker onEmojiClick={handleEmojiClick} theme={"dark" as any} />
+                    </div>,
+                    portalRoot
+                )
+            }
+            {showGifPicker && pickerPos &&
+                createPortal(
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: pickerPos.top,
+                            left: pickerPos.left,
+                            zIndex: 1000,
+                        }}
+                    >
+                        <GifPicker onGifSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                    </div>,
+                    portalRoot
+                )
+            }
             <button
                 onClick={sendMessage}
                 className="px-4 py-2 rounded"
