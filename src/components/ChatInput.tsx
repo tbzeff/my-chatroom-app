@@ -72,13 +72,15 @@ export function ChatInput({
                 </span>
             </button>
             {showEmojiPicker && (
-                <div className="absolute bottom-12 right-16 z-10">
+                <div className="absolute right-0 bottom-14 z-10 mb-2">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     <EmojiPicker onEmojiClick={handleEmojiClick} theme={"dark" as any} />
                 </div>
             )}
             {showGifPicker && (
-                <GifPicker onGifSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                <div className="absolute right-0 bottom-14 z-10 mb-2">
+                    <GifPicker onGifSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                </div>
             )}
             <button
                 onClick={sendMessage}

@@ -7,6 +7,7 @@ A simple, real-time chatroom web application built with **React**, **TypeScript*
 - Real-time messaging via WebSockets
 - Persistent username using `localStorage`
 - Typing indicators
+- GIF search and sharing powered by Giphy
 - Responsive and styled with Tailwind CSS
 - Built with performance and modularity in mind
 
@@ -17,6 +18,7 @@ A simple, real-time chatroom web application built with **React**, **TypeScript*
 - **Styling:** Tailwind CSS 4
 - **Build Tool:** Vite
 - **WebSocket:** socket.io-client
+- **GIF Search:** Giphy API
 
 ## 📁 Project Structure
 
@@ -76,6 +78,15 @@ These instructions will get the development environment running locally.
 ```bash
 npm run lint
 ```
+
+## 🎬 GIF Search & Giphy API Usage
+
+This project integrates GIF search and sharing using the [Giphy API](https://developers.giphy.com/). All GIFs are subject to Giphy's [Terms of Service](https://support.giphy.com/hc/en-us/articles/360020027752-GIPHY-API-Terms-of-Service) and branding requirements.
+
+- **Rate Limit:** The default Giphy API key included for development is limited to **100 API calls per hour** (shared across all users of the deployed app).
+- If you plan to deploy this app publicly or expect heavy usage, [register your own Giphy API key](https://developers.giphy.com/dashboard/) and update the key in the codebase.
+- If the rate limit is exceeded, GIF search will temporarily stop working until the next hour.
+- For security, **do not commit your personal or production Giphy API key to a public repository**.
 
 ## 🧪 Backend Setup (for testing)
 
