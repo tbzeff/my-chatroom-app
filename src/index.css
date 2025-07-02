@@ -69,6 +69,16 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.giphy-logo {
+  height: 44px !important;
+  width: 44px !important;
+  object-fit: contain;
+}
+
+.gif-picker {
+  background-color: var(--color-neutral);
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: var(--color-primary);

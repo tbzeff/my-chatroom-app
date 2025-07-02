@@ -54,16 +54,16 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
   );
 
   return (
-    <div className="absolute bottom-12 right-2 z-20 bg-white rounded shadow-lg p-2 w-[300px] h-80 flex flex-col">
+    <div className="gif-picker absolute bottom-12 right-2 z-20 bg-white rounded shadow-lg p-2 w-[300px] h-80 flex flex-col">
       <button
         className="mb-2 text-xs text-gray-500 hover:text-gray-800 float-right"
         onClick={onClose}
       >
         Close
       </button>
-      <div className="flex items-center gap-2 mb-2 h-6">
-        <img src="https://giphy.com/static/img/giphy_logo_square_social.png" alt="Giphy logo" className="h-4 w-4 object-contain" />
-        <span className="text-xs text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis flex-1">Powered by Giphy</span>
+      <div className="giphy-attribution bg-grey-900 flex items-center space-x-2 gap-2 mb-2 mt-2 ml-2 h-6">
+        <img src="https://giphy.com/static/img/giphy_logo_square_social.png" alt="Giphy logo" className="giphy-logo" />
+        <span className="text-xs text-gray-500 whitespace-nowrap text-ellipsis flex-1">Powered by Giphy</span>
       </div>
       <div className="flex-1 h-full overflow-y-auto pr-1">
         <Grid
