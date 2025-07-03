@@ -65,7 +65,7 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
         <img src="https://giphy.com/static/img/giphy_logo_square_social.png" alt="Giphy logo" className="giphy-logo" />
         <span className="text-xs text-gray-500 whitespace-nowrap text-ellipsis flex-1">Powered by Giphy</span>
       </div>
-      <div className="flex-1 h-full overflow-y-auto pr-1">
+      <div className="giphy-grid-container flex-1 h-full overflow-y-auto pr-1">
         <Grid
           width={300}
           columns={3}
