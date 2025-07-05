@@ -54,7 +54,7 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
   );
 
   return (
-    <div className="gif-picker absolute bottom-12 right-2 z-20 bg-white rounded shadow-lg p-2 w-[300px] h-80 flex flex-col">
+    <div className="gif-picker absolute bottom-12 right-2 z-20 bg-white rounded shadow-lg p-2 w-[300px] h-full flex flex-col">
       <button
         className="mb-2 text-xs text-gray-500 hover:text-gray-800 float-right"
         onClick={onClose}
@@ -65,7 +65,8 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
         <img src="https://giphy.com/static/img/giphy_logo_square_social.png" alt="Giphy logo" className="giphy-logo" />
         <span className="text-xs text-gray-500 whitespace-nowrap text-ellipsis flex-1">Powered by Giphy</span>
       </div>
-      <div className="giphy-grid-container flex-1 h-full overflow-y-auto pr-1">
+      <div className="giphy-grid-container flex-l h-full pr-1 overflow-y-auto">
+        <div style={{ height: '100%' }}>
         <Grid
           width={300}
           columns={3}
@@ -79,6 +80,7 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
           noLink
           overlay={overlay}
         />
+        </div>
       </div>
       <div ref={errorRef} className="text-xs text-red-500 mt-2" style={{ display: 'none' }} />
     </div>
