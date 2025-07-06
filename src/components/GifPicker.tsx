@@ -10,6 +10,19 @@ interface GifPickerProps {
 
 const apiKey = import.meta.env.VITE_GIPHY_API_KEY;
 
+const RATE_LIMIT = 100; // per hour
+let callCount = 0;
+let lastReset = Date.now();
+
+function canCallApi() {
+  const now = Date.now();
+  if (now - lastReset > 60 * 60 * 1000) {
+    callCount = 0;
+    lastReset = now;
+  }
+  return callCount < RATE_LIMIT;
+}
+
 export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) => {
   const errorRef = useRef<HTMLDivElement>(null);
 
@@ -33,6 +46,16 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
   // Child component to access SearchContext inside SearchContextManager
   const GiphyContent: React.FC = () => {
     const { fetchGifs, searchKey } = React.useContext(SearchContext);
+
+    // Rate-limited fetchGifs wrapper
+    const rateLimitedFetchGifs = async (offset: number) => {
+      if (!canCallApi()) {
+        throw new Error("Giphy API rate limit reached. Try again later.");
+      }
+      callCount++;
+      return fetchGifs(offset);
+    };
+
     return (
       <div style={{height: '350px'}}>
         <SearchBar />
@@ -42,7 +65,7 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
               key={searchKey}
               width={300}
               columns={3}
-              fetchGifs={fetchGifs}
+              fetchGifs={rateLimitedFetchGifs}
               onGifClick={(gif, e) => {
                 e.preventDefault();
                 onGifSelect(gif.images.fixed_height.url);
