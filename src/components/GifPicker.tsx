@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { GiphyFetch } from "@giphy/js-fetch-api";
-import { Grid } from "@giphy/react-components";
+//import { GiphyFetch } from "@giphy/js-fetch-api";
+import { Grid, SearchBar, SearchContextManager, SearchContext} from "@giphy/react-components";
 import type { IGif } from "@giphy/js-types";
 
 interface GifPickerProps {
@@ -9,32 +9,9 @@ interface GifPickerProps {
 }
 
 const apiKey = import.meta.env.VITE_GIPHY_API_KEY;
-const gf = new GiphyFetch(apiKey);
-
-// Simple in-memory rate limiter
-const RATE_LIMIT = 100; // per hour
-let callCount = 0;
-let lastReset = Date.now();
-
-function canCallApi() {
-  const now = Date.now();
-  if (now - lastReset > 60 * 60 * 1000) {
-    callCount = 0;
-    lastReset = now;
-  }
-  return callCount < RATE_LIMIT;
-}
 
 export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) => {
   const errorRef = useRef<HTMLDivElement>(null);
-
-  const fetchGifs = async (offset: number) => {
-    if (!canCallApi()) {
-      throw new Error("Giphy API rate limit reached. Try again later.");
-    }
-    callCount++;
-    return gf.trending({ offset, limit: 9 });
-  };
 
   // Attribution overlay for each GIF
   const overlay = ({ gif }: { gif: IGif }) => (
@@ -53,6 +30,34 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
     </div>
   );
 
+  // Child component to access SearchContext inside SearchContextManager
+  const GiphyContent: React.FC = () => {
+    const { fetchGifs, searchKey } = React.useContext(SearchContext);
+    return (
+      <div style={{height: '350px'}}>
+        <SearchBar />
+        <div className="giphy-grid-container flex-l h-full pr-1 overflow-y-auto">
+          <div style={{ height: '100%' }}>
+            <Grid
+              key={searchKey}
+              width={300}
+              columns={3}
+              fetchGifs={fetchGifs}
+              onGifClick={(gif, e) => {
+                e.preventDefault();
+                onGifSelect(gif.images.fixed_height.url);
+                onClose();
+              }}
+              hideAttribution={false}
+              noLink
+              overlay={overlay}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="gif-picker absolute bottom-12 right-2 z-20 bg-white rounded shadow-lg p-2 w-[300px] h-full flex flex-col">
       <button
@@ -65,23 +70,9 @@ export const GifPicker: React.FC<GifPickerProps> = ({ onGifSelect, onClose }) =>
         <img src="https://giphy.com/static/img/giphy_logo_square_social.png" alt="Giphy logo" className="giphy-logo" />
         <span className="text-xs text-gray-500 whitespace-nowrap text-ellipsis flex-1">Powered by Giphy</span>
       </div>
-      <div className="giphy-grid-container flex-l h-full pr-1 overflow-y-auto">
-        <div style={{ height: '100%' }}>
-        <Grid
-          width={300}
-          columns={3}
-          fetchGifs={fetchGifs}
-          onGifClick={(gif, e) => {
-            e.preventDefault();
-            onGifSelect(gif.images.fixed_height.url);
-            onClose();
-          }}
-          hideAttribution={false}
-          noLink
-          overlay={overlay}
-        />
-        </div>
-      </div>
+      <SearchContextManager apiKey={apiKey}>
+        <GiphyContent />
+      </SearchContextManager>
       <div ref={errorRef} className="text-xs text-red-500 mt-2" style={{ display: 'none' }} />
     </div>
   );
