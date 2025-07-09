@@ -77,7 +77,7 @@ button:focus-visible {
 
 .gif-picker {
   background-color: var(--color-neutral);
-  height: 450px;
+  height: 350px;
 }
 
 .gif-picker .giphy-grid {
