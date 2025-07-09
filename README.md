@@ -133,4 +133,6 @@ Taylor Bleizeffer
 - **https://www.taylorbleizeffer.com**
 - **https://github.com/tbzeff**
 
-
+##
+- [Disclaimer](./DISCLAIMER.md)
+- [Privacy Policy](./PRIVACY.md)
