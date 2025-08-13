@@ -14,8 +14,8 @@ const io = new Server(httpServer, {
   }
 });
 
-app.get('/', (req, res) => {
-  res.send('Socket.io server is running.');
+app.get('/healthz', (req, res) => {
+  res.status(200).send('OK');
 });
 
 let chatHistory = []; // <-- In-memory store
