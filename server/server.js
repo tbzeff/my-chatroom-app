@@ -5,7 +5,17 @@ import { Server } from 'socket.io';
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  cors: { origin: 'http://localhost:5173' }
+  cors: { 
+    origin: [
+      'http://localhost:5173',
+      'https://my-chatroom-app-client.onrender.com'
+    ],
+    methods: ["GET", "POST"]
+  }
+});
+
+app.get('/', (req, res) => {
+  res.send('Socket.io server is running.');
 });
 
 let chatHistory = []; // <-- In-memory store
@@ -43,6 +53,7 @@ io.on('connection', socket => {
   });
 });
 
-httpServer.listen(3002, () => {
-  console.log('Socket.io server listening on http://localhost:3002');
+const PORT = process.env.PORT || 3002;
+httpServer.listen(PORT, () => {
+  console.log(`Socket.io server listening on port ${PORT}`);
 });
