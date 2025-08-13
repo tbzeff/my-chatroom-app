@@ -3,8 +3,13 @@ import Chatroom from "./components/Chatroom";
 function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-950 text-white px-4">
-      <div className="bg-yellow-200 text-black p-2 text-center text-sm">
-        This is a portfolio demo. Do not share personal information.
+      <div className="bg-yellow-200 text-black p-2 text-center text-sm space-y-1">
+        <div><strong>This is a portfolio demo.</strong> Do not share personal information.</div>
+        <div>No guarantee of message delivery or uptime.</div>
+        <div>Messages are not moderated or filtered. Please use responsibly.</div>
+        <div>Do not share passwords, financial, or sensitive data.</div>
+        <div>GIF search is subject to Giphy API rate limits and may be temporarily unavailable.</div>
+        <div>This project is open source and under active development. Features and data handling may change at any time.</div>
       </div>
       <a
         href="https://github.com/tbzeff"
