@@ -49,12 +49,18 @@ export default function Chatroom() {
   };
 
   // Emit username if already set (e.g. on reload)
-  useEffect(() => {
-    if (isUsernameSet && username.trim()) {
+ useEffect(() => {
+  if (isUsernameSet && username.trim()) {
+    if (socket.connected) {
       socket.emit("set username", username);
+    } else {
+      socket.on("connect", () => {
+        socket.emit("set username", username);
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUsernameSet]);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [isUsernameSet, username]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
