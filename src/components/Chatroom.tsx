@@ -9,8 +9,8 @@ import { ChatInput } from "./ChatInput";
 import { UserSidebar } from "./UserSidebar";
 
 // Comment out this URL and un-comment the one with localhost for local development
-const socket: Socket = io(import.meta.env.VITE_SERVER_URL);
-//const socket: Socket = io("http://localhost:3002");
+//const socket: Socket = io(import.meta.env.VITE_SERVER_URL);
+const socket: Socket = io("http://localhost:3002");
 
 export interface Message {
   id: string;
@@ -149,7 +149,7 @@ export default function Chatroom() {
 
   return (
     <div
-      className="w-full max-w-3xl mx-auto p-4 rounded-xl shadow-lg flex h-[24rem] relative"
+      className="w-full max-w-3xl mx-auto p-4 rounded-xl shadow-lg flex  min-h-[24rem] relative"
       style={{
         backgroundColor: "var(--color-primary)",
         color: "var(--color-neutral)",
@@ -201,7 +201,7 @@ export default function Chatroom() {
             />
           </div>
           {/* Sidebar - wider */}
-          <UserSidebar users={users} username={username} />
+          <UserSidebar users={users} username={username} /> 
         </div>
       </div>
     </div>

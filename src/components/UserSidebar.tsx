@@ -6,7 +6,7 @@ interface UserSidebarProps {
 export function UserSidebar({ users, username }: UserSidebarProps) {
   return (
     <aside
-      className="w-[12rem] rounded border px-4 flex flex-col ml-4 h-full self-start"
+      className="w-[12rem] rounded border px-4 flex flex-col ml-4 self-start min-h-[24rem] max-h-[24rem] overflow-y-auto"
       style={{
         backgroundColor: "var(--color-secondary)",
         borderColor: "var(--color-accent)",

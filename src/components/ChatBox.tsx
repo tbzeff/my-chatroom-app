@@ -13,7 +13,7 @@ export function ChatBox({ messages, typing, isUserNearBottom, chatEndRef, chatBo
   return (
     <div
       ref={chatBoxRef}
-      className="flex-1 overflow-y-auto border p-2 mb-4 rounded scroll-smooth"
+      className="flex-1 overflow-y-auto border p-2 mb-4 min-h-[24rem] max-h-[24rem] rounded scroll-smooth"
       style={{
         borderColor: "var(--color-secondary)",
         backgroundColor: "var(--color-neutral)",
