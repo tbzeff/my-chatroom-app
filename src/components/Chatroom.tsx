@@ -31,7 +31,7 @@ export default function Chatroom() {
   const [isUserNearBottom, setIsUserNearBottom] = useState(true);
 
   const [username, setUsername] = useState(
-    localStorage.getItem("username") || ""
+    sessionStorage.getItem("username") || ""
   );
   const [isUsernameSet, setIsUsernameSet] = useState(!!username);
 
@@ -42,7 +42,7 @@ export default function Chatroom() {
 
   const handleUsernameSubmit = () => {
     if (username.trim()) {
-      localStorage.setItem("username", username);
+      sessionStorage.setItem("username", username);
       setIsUsernameSet(true);
       socket.emit("set username", username); // Inform server of username
     }
