@@ -8,7 +8,9 @@ import { ChatBox } from "./ChatBox";
 import { ChatInput } from "./ChatInput";
 import { UserSidebar } from "./UserSidebar";
 
-const socket: Socket = io("http://localhost:3002");
+// Comment out this URL and un-comment the one with localhost for local development
+const socket: Socket = io(import.meta.env.VITE_SERVER_URL);
+//const socket: Socket = io("http://localhost:3002");
 
 export interface Message {
   id: string;

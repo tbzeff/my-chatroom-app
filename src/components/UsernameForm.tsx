@@ -1,5 +1,3 @@
-import React from "react";
-
 interface UsernameFormProps {
   username: string;
   setUsername: (name: string) => void;
