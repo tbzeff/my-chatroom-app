@@ -7,11 +7,15 @@ A simple, real-time chatroom web application built with **React**, **TypeScript*
 
 [https://my-chatroom-app-client.onrender.com](https://my-chatroom-app-client.onrender.com)
 
+## ℹ️ Important Notes
+
+- **Username Persistence:** For privacy and security, your username is only remembered for your current browser session. If you close your browser or tab, you'll need to set your username again next time you visit.
+- **Server Wake-Up Delay:** This app uses Render's free hosting for the chat server. If the server has been inactive for a while, it may take up to 50 seconds to start up when you first send a message or connect. Please be patient if you experience a delay after a period of inactivity.
 
 ## 🌐 Features
 
 - Real-time messaging via WebSockets
-- Persistent username using `localStorage`
+- Username is saved only for your current browser session (you'll be asked to set it again if you close and reopen your browser)
 - Typing indicators
 - GIF search and sharing powered by Giphy
 - Responsive and styled with Tailwind CSS
