@@ -3,6 +3,9 @@ import Chatroom from "./components/Chatroom";
 function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-950 text-white px-4">
+      <div className="flex-1 flex items-center justify-center">
+        <Chatroom />
+      </div>
       <div className="bg-yellow-200 text-black p-2 text-center text-sm space-y-1">
         <div><strong>This is a portfolio demo.</strong> Do not share personal information.</div>
         <div><strong>Username is only saved for your current browser session.</strong> You'll need to set it again if you close or reload your browser.</div>
@@ -21,9 +24,6 @@ function App() {
       >
         View my GitHub repository for more information
       </a>
-      <div className="flex-1 flex items-center justify-center">
-        <Chatroom />
-      </div>
     </div>
   );
 }
